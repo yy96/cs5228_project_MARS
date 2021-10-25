@@ -52,9 +52,14 @@ def add_speicific_word_features(df: pd.DataFrame) -> pd.DataFrame:
 
 def add_one_hot_encode(df: pd.DataFrame) -> pd.DataFrame:
   col_ls = ["transmission", "fuel_type", "type_of_vehicle"]
-  
+  val_dic = {}
+  val_dic["transmission"] = ['auto', 'manual']
+  val_dic["fuel_type"] = ['missing', 'diesel', 'petrol-electric', 'petrol', 'electric']
+  val_dic["type_of_vehicle"] = ['mid-sized sedan', 'sports car', 'truck', 'stationwagon', 'suv',
+       'mpv', 'luxury sedan', 'hatchback', 'van', 'bus/mini bus', 'others']
+
   for col in col_ls:
-      unique_vals = list(df[col].unique())
+      unique_vals = val_dic[col]
       for val in unique_vals:
           df[f"is_{val}"] = np.where(df[col] == val, 1, 0)
   

@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import yaml
+import os
 
 from src.utils.num_vars import (
   calculate_arf,
@@ -8,6 +10,14 @@ from src.utils.num_vars import (
   calculate_road_tax
 )
 from src.features.transformations import add_make_model
+
+CURR_DIR = os.path.abspath(os.path.dirname(__file__))
+with open(f'{CURR_DIR}/../../config.yaml', 'r') as file:
+    feature_dic = yaml.safe_load(file)
+target = feature_dic["target"]
+cat_encoding_features = feature_dic["cat_encoding_features"]
+num_features = feature_dic["num_features"]
+cat_features = feature_dic["cat_features"]
 
 def backfill_arf(df):
   df["arf_calculated"] = df["omv"].apply(lambda x: calculate_arf(x))
@@ -93,3 +103,10 @@ def backfill_mileage(df, df_train):
 
   return df
 
+def backfill_missing_num_var(df):
+  df[num_features] = df[num_features].fillna(value=-1)
+  return df
+
+def backfill_missing_cat_var(df):
+  df[cat_features] = df[cat_features].fillna(value="missing")
+  return df

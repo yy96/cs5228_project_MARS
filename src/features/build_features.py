@@ -18,14 +18,16 @@ from src.features.imputation import (
   backfill_road_tax,
   backfill_coe,
   backfill_make_model_features,
-  backfill_mileage
+  backfill_mileage,
+  backfill_missing_cat_var,
+  backfill_missing_num_var
 )
 
 from src.features.encoding import (
   cat_encoding
 )
 
-
+pd.options.mode.chained_assignment = None 
 train_dataset_path = "/Users/user/Desktop/cs5228_project_MARS/data/raw/train.csv"
 category_ls = generate_categories(pd.read_csv(train_dataset_path))
 
@@ -43,8 +45,7 @@ def main():
     train_encode = []
     for train_index, test_index in kf.split(df_train):
       df_train_encode, df_val = df_train.iloc[train_index], df_train.iloc[test_index]
-      df_val = apply_feature_engineering(df_val)
-      df_val = apply_imputation(df_train_encode, df_val)
+      df_val = apply_feature_engineering(df_train_encode, df_val)
       df_val = apply_target_encoding(df_train_encode, df_val)
       df_val.reset_index(inplace=True, drop=True)
       train_encode.append(df_val)
@@ -54,27 +55,20 @@ def main():
   elif stage == "test":
     df_train = pd.read_csv("/Users/user/Desktop/cs5228_project_MARS/data/raw/train.csv")
     df_test = pd.read_csv("/Users/user/Desktop/cs5228_project_MARS/data/raw/test.csv")
-
-    df_test = apply_feature_engineering(df_test)
-    df_test = apply_imputation(df_train, df_test)
+    
+    df_test = apply_feature_engineering(df_train, df_test)
     df_test = apply_target_encoding(df_train, df_test)
 
     df_test.to_csv("/Users/user/Desktop/cs5228_project_MARS/data/processed/test_engineered.csv")
 
-def apply_feature_engineering(df: pd.DataFrame) -> pd.DataFrame:
+def apply_feature_engineering(df_train: pd.DataFrame, df: pd.DataFrame) -> pd.DataFrame:
   return(
     df.copy()
     .pipe(add_category_features, category_ls = category_ls)
-    .pipe(add_basic_text_features)
-    .pipe(add_speicific_word_features)
-    .pipe(add_one_hot_encode)
-    .pipe(add_make_model)
     .pipe(add_coe_date_features)
-    .pipe(add_time_features))
-
-def apply_imputation(df_train: pd.DataFrame, df: pd.DataFrame) -> pd.DataFrame:
-  return(
-    df.copy()
+    .pipe(add_time_features)
+    .pipe(add_make_model)
+    .pipe(backfill_missing_cat_var)
     .pipe(backfill_arf)
     .pipe(backfill_coe, df_train=df_train)
     .pipe(backfill_dereg_value)
@@ -82,7 +76,11 @@ def apply_imputation(df_train: pd.DataFrame, df: pd.DataFrame) -> pd.DataFrame:
     .pipe(backfill_road_tax)
     .pipe(backfill_make_model_features, df_train=df_train)
     .pipe(backfill_mileage, df_train=df_train)
-  )
+    .pipe(add_basic_text_features)
+    .pipe(add_speicific_word_features)
+    .pipe(add_one_hot_encode)
+    .pipe(backfill_missing_num_var)
+    )
 
 def apply_target_encoding(df_train: pd.DataFrame, df: pd.DataFrame) -> pd.DataFrame:
   return(

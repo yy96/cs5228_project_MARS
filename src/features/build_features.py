@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from argparse import ArgumentParser
 from sklearn.model_selection import KFold
@@ -28,7 +29,10 @@ from src.features.encoding import (
 )
 
 pd.options.mode.chained_assignment = None 
-train_dataset_path = "/Users/user/Desktop/cs5228_project_MARS/data/raw/train.csv"
+PROJECT_DIR = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
+train_dataset_path = os.path.join(PROJECT_DIR, "data/raw/train.csv")
+test_dataset_path = os.path.join(PROJECT_DIR, "data/raw/test.csv")
+save_data_path = os.path.join(PROJECT_DIR, "data/processed")
 category_ls = generate_categories(pd.read_csv(train_dataset_path))
 
 
@@ -39,27 +43,27 @@ def main():
 
   stage = args.stage
   if stage == "train":
-    df_train = pd.read_csv("/Users/user/Desktop/cs5228_project_MARS/data/raw/train.csv")
+    df_train = pd.read_csv(train_dataset_path)
     # 5 fold to build the data
     kf = KFold(n_splits = 5, shuffle = True, random_state = 2)
     train_encode = []
     for train_index, test_index in kf.split(df_train):
       df_train_encode, df_val = df_train.iloc[train_index], df_train.iloc[test_index]
-      df_val = apply_feature_engineering(df_train_encode, df_val)
+      df_val = apply_feature_engineering(df_train, df_val)
       df_val = apply_target_encoding(df_train_encode, df_val)
       df_val.reset_index(inplace=True, drop=True)
       train_encode.append(df_val)
     
     df_train_encode = pd.concat(train_encode)
-    df_train_encode.to_csv("/Users/user/Desktop/cs5228_project_MARS/data/processed/train_engineered.csv")
+    df_train_encode.to_csv(os.path.join(save_data_path, "train_engineered.csv"), index=False)
   elif stage == "test":
-    df_train = pd.read_csv("/Users/user/Desktop/cs5228_project_MARS/data/raw/train.csv")
-    df_test = pd.read_csv("/Users/user/Desktop/cs5228_project_MARS/data/raw/test.csv")
+    df_train = pd.read_csv(train_dataset_path)
+    df_test = pd.read_csv(test_dataset_path)
     
     df_test = apply_feature_engineering(df_train, df_test)
     df_test = apply_target_encoding(df_train, df_test)
 
-    df_test.to_csv("/Users/user/Desktop/cs5228_project_MARS/data/processed/test_engineered.csv")
+    df_test.to_csv(os.path.join(save_data_path, "test_engineered.csv"), index=False)
 
 def apply_feature_engineering(df_train: pd.DataFrame, df: pd.DataFrame) -> pd.DataFrame:
   return(

@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import pandas as pd
+from category_encoders.james_stein import JamesSteinEncoder
 
 from src.utils.agg import percentile
 from src.features.transformations import add_make_model
@@ -37,5 +38,11 @@ def cat_encoding(df, df_train):
     df = df.drop(f"{i}_", axis=1)
     df[col_ls] = df[col_ls].fillna(value=-1)
 
+  JSE_encoder = JamesSteinEncoder(handle_missing = "value",
+                                  handle_unknown = "value")
+  JSE_encoder.fit(df_train[cat_encode_vars], df_train["price"])
+  transformed_jse = JSE_encoder.transform(df[cat_encode_vars])
+  transformed_jse.columns = [f"{i}_jse_encode" for i in transformed_jse.columns]
+  df =pd.concat([df, transformed_jse], axis = 1)
+    
   return df
-      

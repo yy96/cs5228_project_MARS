@@ -17,7 +17,7 @@ with open(f'{CURR_DIR}/../../config.yaml', 'r') as file:
 target = feature_dic["target"]
 cat_encoding_features = feature_dic["cat_encoding_features"]
 num_features = feature_dic["num_features"]
-cat_features = feature_dic["cat_features"]
+cat_features = feature_dic["cat_features_engineer"]
 
 def backfill_arf(df):
   df["arf_calculated"] = df["omv"].apply(lambda x: calculate_arf(x))

@@ -31,7 +31,8 @@ def main():
 
   y_pred = rf_model.predict(df_test[rf_features])
   df_predict_rf = pd.DataFrame({"Predicted": y_pred})
-  df_predict_rf.to_csv(os.join(PROJECT_DIR, "data/processed/predict_rf.csv", index_label = "Id"))
+  df_predict_rf.to_csv(os.path.join(PROJECT_DIR, "data/processed/predict_rf.csv"), index_label = "Id")
+  rf_model.save(os.path.join(PROJECT_DIR, "models/random_forest.pkl"))
 
   print ("training xgboost model")
   xgboost_param_dic = config["xgboost_parameters"]
@@ -43,7 +44,8 @@ def main():
 
   y_pred = xgboost_model.predict(df_test[xgboost_features])
   df_predict_xgboost = pd.DataFrame({"Predicted": y_pred})
-  df_predict_xgboost.to_csv(os.join(PROJECT_DIR, "data/processed/predict_xgboost.csv", index_label = "Id"))
+  df_predict_xgboost.to_csv(os.path.join(PROJECT_DIR, "data/processed/predict_xgboost.csv"), index_label = "Id")
+  xgboost_model.save(os.path.join(PROJECT_DIR, "models/xgboost.pkl"))
 
   print ("training catboost model")
   catboost_param_dic = config["catboost_parameters"]
@@ -56,9 +58,10 @@ def main():
   catboost_model = CategoricalBoostRegressor(catboost_estimator, catboost_features, target, cat_features_loc)
   catboost_model.train(df_train[catboost_features_with_target])
 
-  y_pred = catboost_model.predict(df_test[catboost_features_with_target])
+  y_pred = catboost_model.predict(df_test[catboost_features])
   df_predict_catboost = pd.DataFrame({"Predicted": y_pred})
-  df_predict_catboost.to_csv(os.join(PROJECT_DIR, "data/processed/predict_catboost.csv", index_label = "Id"))
+  df_predict_catboost.to_csv(os.path.join(PROJECT_DIR, "data/processed/predict_catboost.csv"), index_label = "Id")
+  catboost_model.save(os.path.join(PROJECT_DIR, "models/catboost.pkl"))
 
 if __name__ == "__main__":
     main()

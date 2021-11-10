@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Dict, List
+import pickle
 
 import numpy as np
 import pandas as pd
@@ -47,6 +48,10 @@ class SklearnRegressor():
     
     def get_params(self):
         return self.model.get_params()
+    
+    def save(self, path):
+        with open(path, 'wb') as f:
+            pickle.dump(self.model, f)
 
 
 class CategoricalBoostRegressor():
@@ -85,6 +90,10 @@ class CategoricalBoostRegressor():
     
     def get_params(self):
         return self.model.get_params()
+
+    def save(self, path):
+        with open(path, 'wb') as f:
+            pickle.dump(self.model, f)
 
 
 def compute_metrics_collection(actual, prediction):

@@ -4,7 +4,7 @@ cs5228_project
 This is the repository for module CS5228 project.
 
 ## Task 1
-The code repository contains the working code for task 1. Before running the code, you call install the necessary package by running
+The code repository contains the working code for task 1, our main code implementation is in `/src` directory while `/notebooks` contain the work during model development stage. Before running the code, you call install the necessary package by running
 ```
 make requirements
 ```

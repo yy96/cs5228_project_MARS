@@ -22,3 +22,7 @@ make model_predict
 ```
 The pickle file for the models will be saved to `models` folder, while the predicted outcomes will be saved to `data/processed/df_rf.csv`, `data/processed/df_xgboost.csv` and `data/processed/df_catboost.csv` respectively.
 
+The work during model development stage can be found in `/notebooks` directory
+- `1. yy-data-analysis.ipynb`: This notebook contains the information on initial EDA work.
+- `2. yy-feature-engineering.ipynb`: This notebook contains the feature preprocessing and feature engineering step.
+- `3. yy-model-training.ipynb`: This notebook contains the work for model training and hyperparameter tuning.

@@ -16,7 +16,7 @@ make test_data
 ```
 The outputs will be saved to `data/processed/train_engineered.csv` and `data/processed/test_engineered.csv`
 
-- src/models: The folder contains the codes for model training and predicting results. You can get trained model files and the prediction results for random forest, xgboost and catboost by running the following command
+- src/models: The folder contains the codes for model training and predicting results. You can get trained model files and the prediction results for random forest, xgboost and catboost by running the following command (Note this step should only be run after the processed data has been made using the previous step)
 ```
 make model_predict
 ```

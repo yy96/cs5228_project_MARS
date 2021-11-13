@@ -21,7 +21,8 @@ from src.features.imputation import (
   backfill_make_model_features,
   backfill_mileage,
   backfill_missing_cat_var,
-  backfill_missing_num_var
+  backfill_missing_num_var,
+  backfill_fuel_type
 )
 
 from src.features.encoding import (
@@ -44,6 +45,7 @@ def main():
   stage = args.stage
   if stage == "train":
     df_train = pd.read_csv(train_dataset_path)
+    df_train = df_train.drop_duplicates(subset=["listing_id", "price"])
     # 5 fold to build the data
     kf = KFold(n_splits = 5, shuffle = True, random_state = 2)
     train_encode = []
@@ -58,6 +60,7 @@ def main():
     df_train_encode.to_csv(os.path.join(save_data_path, "train_engineered.csv"), index=False)
   elif stage == "test":
     df_train = pd.read_csv(train_dataset_path)
+    df_train = df_train.drop_duplicates(subset=["listing_id", "price"])
     df_test = pd.read_csv(test_dataset_path)
     
     df_test = apply_feature_engineering(df_train, df_test)
@@ -72,6 +75,7 @@ def apply_feature_engineering(df_train: pd.DataFrame, df: pd.DataFrame) -> pd.Da
     .pipe(add_coe_date_features)
     .pipe(add_time_features)
     .pipe(add_make_model)
+    # .pipe(backfill_fuel_type, df_train=df_train)
     .pipe(backfill_missing_cat_var)
     .pipe(backfill_arf)
     .pipe(backfill_coe, df_train=df_train)

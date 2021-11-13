@@ -67,6 +67,7 @@ def add_one_hot_encode(df: pd.DataFrame) -> pd.DataFrame:
 
 def add_make_model(df: pd.DataFrame) -> pd.DataFrame:
   df['make_fill'] = df.apply(lambda x: x["make"] if not pd.isnull(x["make"]) else x["title"].lower().split()[0], axis = 1)
+  df['make_fill'][df['make_fill'] == "mercedes"] = "mercedes-benz"
   df["make_model"] = df["make_fill"] + " " + df["model"]
   return df
 

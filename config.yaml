@@ -178,7 +178,7 @@ xgboost_parameters:
   random_state: 10
 
 catboost_parameters:
-  iterations: 360
+  iterations: 400
   random_state: 10
   loss_function: RMSE
   eval_metric: RMSE

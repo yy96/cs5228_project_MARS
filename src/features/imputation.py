@@ -103,6 +103,20 @@ def backfill_mileage(df, df_train):
 
   return df
 
+def backfill_fuel_type(df, df_train):
+  df_train = add_make_model(df_train)
+  df_non_missing = df_train[~(df_train['fuel_type'].isna())][['make_model', 'fuel_type']]
+  grouped_series = df_non_missing.groupby(['make_model', 'fuel_type']).fuel_type.count()
+  grouped_top = pd.DataFrame(grouped_series.groupby(level='make_model').nlargest(1).reset_index(level=0, drop=True))
+  grouped_top.rename({"fuel_type": "count"}, axis=1, inplace=True)
+  grouped_top.reset_index(inplace=True)
+  grouped_top.rename({"fuel_type": "fuel_type_fill"}, axis=1, inplace=True)
+
+  df = df.merge(grouped_top, on='make_model', how ='left')
+  df["fuel_type"] = np.where(df['fuel_type'].isnull(), df['fuel_type_fill'], df['fuel_type'])
+
+  return df
+
 def backfill_missing_num_var(df):
   df[num_features] = df[num_features].fillna(value=-1)
   return df

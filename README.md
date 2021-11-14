@@ -23,6 +23,14 @@ make model_predict
 The pickle file for the models will be saved to `models` folder, while the predicted outcomes will be saved to `data/processed/df_rf.csv`, `data/processed/df_xgboost.csv` and `data/processed/df_catboost.csv` respectively.
 
 The work during model development stage can be found in `/notebooks` directory
-- `1. yy-data-analysis.ipynb`: This notebook contains the information on initial EDA work.
-- `2. yy-feature-engineering.ipynb`: This notebook contains the feature preprocessing and feature engineering step.
-- `3. yy-model-training.ipynb`: This notebook contains the work for model training and hyperparameter tuning.
+- `task1-1. yy-data-analysis.ipynb`: This notebook contains the information on initial EDA work.
+- `task1-2. yy-feature-engineering.ipynb`: This notebook contains the feature preprocessing and feature engineering step.
+- `task1-3. yy-model-training.ipynb`: This notebook contains the work for model training and hyperparameter tuning.
+
+## Task 2
+The main notebook for task 2 can be found in `/notebooks/task2.ipynb`.
+
+The script to generate for dummy file which we have attempted to explore collaborative filtering with can be found in `\data\dummy_data_generator.py` and the data generated can be found in `user_dummy_data.csv`
+
+## Task 3
+The notebook for task 3 can be found in `notebooks/task3.ipynb`.
